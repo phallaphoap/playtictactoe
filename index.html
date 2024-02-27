@@ -196,6 +196,7 @@
             squares.forEach(square => {
                 square.textContent = '';
             });
+            resetSquareColors();
             xTurn = Math.random() < 0.5;
             gameOver = false;
             document.querySelector('.turn-indicator').textContent = xTurn ? "X's TURN" : "O's TURN";
@@ -203,6 +204,12 @@
 
         // Append the Start Game button after the board
         document.querySelector('.board').insertAdjacentElement('afterend', startButton);
+                // Function to reset the background color of all squares
+        function resetSquareColors() {
+            squares.forEach(square => {
+                square.style.backgroundColor = '#f0f0f0'; // Reset to the default color
+            });
+        }
     </script>
 </body>
 
