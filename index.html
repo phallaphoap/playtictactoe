@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic Tac Toe</title>
+    <style>
+        body,
+        h1,
+        .turn-indicator,
+        button {
+            font-family: 'Raleway', sans-serif;
+        }
+        
+        .board {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-gap: 5px;
+            width: 310px;
+            position: absolute;
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        
+        .square {
+            width: 100px;
+            height: 100px;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2em;
+            border-radius: 10px;
+            color: #ffffff;
+        }
+        
+        .square.X {
+            color: #ffffff;
+        }
+        
+        .square.O {
+            color: #ffffff;
+        }
+        
+        .square:hover {
+            background-color: #ADD8E6;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #ADD8E6;
+            /* Light blue color */
+            font-size: 2em;
+            text-decoration: none;
+            margin-top: 185px;
+            /* Adjust margin-top to move the h1 down */
+        }
+        
+        .turn-indicator {
+            border: 2px solid #ADD8E6;
+            /* Match border color to button's background color */
+            text-align: center;
+            width: 120px;
+            height: 40px;
+            line-height: 40px;
+            margin: 10px auto;
+            position: absolute;
+            top: 60%;
+            /* Adjust top position for turn indicator */
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 5px;
+            font-size: .75em;
+            border-radius: 5px;
+        }
+        
+        .win-condition {
+            text-align: center;
+            margin: 10px auto;
+            width: 200px;
+            border: none;
+        }
+        
+        button {
+            background-color: #ADD8E6;
+            /* Light blue background color */
+            color: #ffffff;
+            /* White text color */
+            padding: 8px;
+            /* Adjust padding for button size */
+            border: none;
+            /* Remove border */
+            border-radius: 5px;
+            /* Add border radius for rounded corners */
+            cursor: pointer;
+            /* Add pointer cursor on hover */
+            position: absolute;
+            top: 65%;
+            /* Adjust top position for button */
+            left: 50%;
+            transform: translateX(-50%);
+            width: 135px;
+            /* Adjust width to match border size */
+            height: 50px;
+            /* Adjust height to match border size */
+        }
+        
+        button:hover {
+            background-color: #87CEEB;
+            /* Darker blue background color on hover */
+        }
+    </style>
+</head>
+
+<body>
+    <h1 style="text-decoration: none; font-size: 2em;">TIC TAC TOE</h1>
+    <div class="board">
+        <script>
+            const NUM_SQUARES = 9;
+            for (let i = 0; i < NUM_SQUARES; i++) {
+                const id = "sq" + i;
+                document.write("<div class='square' id='" + id + "'></div>");
+            }
+        </script>
+    </div>
+    <div class="turn-indicator">X'S TURN</div>
+    <div class="win-condition"></div>
+    <script>
+        const squares = document.querySelectorAll('.square');
+        let xTurn = Math.random() < 0.5; // Randomly choose who starts
+        let gameOver = false;
+
+        squares.forEach((square, index) => {
+            square.addEventListener('click', () => {
+                if (!gameOver && !square.textContent) {
+                    square.textContent = xTurn ? 'X' : 'O';
+                    square.classList.add(xTurn ? 'X' : 'O');
+
+                    // Added line to toggle the background color for the clicked square
+                    square.style.backgroundColor = xTurn ? '#FF69B4' : '#6A5ACD';
+
+                    // Create an array called moves with the current X or O value in each square
+                    let moves = [];
+                    squares.forEach(square => {
+                        moves.push(square.textContent || '-');
+                    });
+
+                    // Create an array called winConditions to represent the 8 possible win conditions
+                    let winConditions = [
+                        moves[0] + moves[1] + moves[2],
+                        moves[3] + moves[4] + moves[5],
+                        moves[6] + moves[7] + moves[8],
+                        moves[0] + moves[3] + moves[6],
+                        moves[1] + moves[4] + moves[7],
+                        moves[2] + moves[5] + moves[8],
+                        moves[0] + moves[4] + moves[8],
+                        moves[2] + moves[4] + moves[6]
+                    ];
+
+                    // Place X or O before displaying the win message
+                    if (winConditions.includes('XXX')) {
+                        square.textContent = xTurn ? 'X' : 'O';
+                        xTurn = !xTurn; // Switch back to the previous player
+                        document.querySelector('.turn-indicator').textContent = xTurn ? "X's TURN" : "O's TURN";
+                        setTimeout(() => {
+                            alert("X wins!");
+                            gameOver = true;
+                        }, 250); // Delay alert by 250 milliseconds
+                    } else if (winConditions.includes('OOO')) {
+                        square.textContent = xTurn ? 'X' : 'O';
+                        xTurn = !xTurn; // Switch back to the previous player
+                        document.querySelector('.turn-indicator').textContent = xTurn ? "X's TURN" : "O's TURN";
+                        setTimeout(() => {
+                            alert("O wins!");
+                            gameOver = true;
+                        }, 250); // Delay alert by 250 milliseconds
+                    } else if (!moves.includes('-')) {
+                        setTimeout(() => {
+                            alert("Stalemate!");
+                            gameOver = true;
+                        }, 250); // Delay alert by 250 milliseconds
+                    } else {
+                        xTurn = !xTurn; // Switch to the next player
+                        document.querySelector('.turn-indicator').textContent = xTurn ? "X's TURN" : "O's TURN";
+                    }
+                }
+            });
+        });
+
+        // Add event listener to Start Game button
+        const startButton = document.createElement('button');
+        startButton.textContent = 'START GAME';
+        startButton.addEventListener('click', () => {
+            squares.forEach(square => {
+                square.textContent = '';
+            });
+            xTurn = Math.random() < 0.5;
+            gameOver = false;
+            document.querySelector('.turn-indicator').textContent = xTurn ? "X's TURN" : "O's TURN";
+        });
+
+        // Append the Start Game button after the board
+        document.querySelector('.board').insertAdjacentElement('afterend', startButton);
+    </script>
+</body>
+
+</html>
